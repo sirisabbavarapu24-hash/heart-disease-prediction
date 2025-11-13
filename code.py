@@ -8,15 +8,22 @@ import matplotlib.pyplot as plt
 from pandas.plotting import scatter_matrix
 import seaborn as sns
 cleveland = pd.read_csv('heart.csv')
-cleveland.loc[0:
+cleveland.loc[0:]
+
 data = cleveland[~cleveland.isin(['?'])]
-data.loc[0:]data = data.dropna(axis=0)
 data.loc[0:]
+
 data = data.dropna(axis=0)
 data.loc[0:]
+
+data = data.dropna(axis=0)
+data.loc[0:]
+
 print(data.shape)
 print(data.dtypes)
+
 data.describe()
+
 data.hist(figsize = (12,12))
 plt.show()
 pd.crosstab(data.age,data.target).plot(kind = "bar",figsize=(20,6))
@@ -37,23 +44,12 @@ X/=std
 
 from sklearn import model_selection
 X_train, X_test, y_train, y_test = model_selection.train_test_split(X,y,stratify=y,random_state=42,test_size = 0.2)
-'''from tensorflow.keras.utils.np_utils import to_categorical
+from tensorflow.keras.utils import to_categorical
 Y_train = to_categorical(y_train,num_classes=None)
 Y_test = to_categorical(y_test, num_classes=None)
 print(Y_train.shape)
 print(Y_train[:10])
 X_train[0]
-from sklearn.preprocessing import OneHotEncoder
-import numpy as np
-
-encoder = OneHotEncoder()
-Y_train = encoder.fit_transform(np.array(y_train).reshape(-1, 1))
-Y_test = encoder.transform(np.array(y_test).reshape(-1, 1))'''
-from tensorflow.keras.utils import to_categorical
-
-Y_train = to_categorical(y_train)
-Y_test = to_categorical(y_test)
-
 
 from keras.models import Sequential
 from keras.layers import Dense
@@ -64,7 +60,7 @@ def create_model():
   model = Sequential()
   model.add(Dense(16,input_dim=13,kernel_initializer='normal',kernel_regularizer=regularizers.l2(0.001),activation='relu'))
   model.add(Dropout(0.25))
-  model.add(Dense(8kernel_initializer='normal', kernel_regularizer=regularizers.l2 (0.001), activation='relu'))
+  model.add(Dense(8, kernel_initializer='normal', kernel_regularizer=regularizers.l2 (0.001), activation='relu'))
   model.add(Dropout(0.25))
   model.add(Dense (2, activation='softmax'))
   adam = Adam (learning_rate=0.001)
@@ -104,9 +100,9 @@ print (Y_train_binary[:20])
 def create_binary_model():
 
    model = Sequential()
-   model.add(Dense(16,input_dim=13,kernel_initializer='normal', kernel_regularizer=regularizers.l2(0.001), activation='relu'))
+   model.add(Dense(16, input_dim=13, kernel_initializer='normal', kernel_regularizer=regularizers.l2(0.001), activation='relu'))
    model.add(Dropout(0.25))
-   model.add(Dense(8,kernel_initializer='normal', kernel_regularizer=regularizers.l2(0.001), activation='relu'))
+   model.add(Dense(8, kernel_initializer='normal', kernel_regularizer=regularizers.l2(0.001), activation='relu'))
    model.add(Dropout(0.25))
    model.add(Dense(1, activation='sigmoid'))
 
@@ -116,7 +112,7 @@ def create_binary_model():
 binary_model = create_binary_model()
 print (binary_model.summary())
 
-history=binary_model.fit(X_train,Y_train_binary,validation_data=(X_test,Y_test_binary),epochs=50, batch_size=10)
+history=binary_model.fit (X_train, Y_train_binary, validation_data=(X_test, Y_test_binary), epochs=50, batch_size=10)
 
 plt.plot(history.history['loss'])
 plt.plot(history.history['val_loss'])
@@ -176,7 +172,6 @@ def crossover():
     print(parents)
 crossover()
 
-
 def mutation():
     global populations,parents
     mute = random.randint(0,49)
@@ -198,7 +193,7 @@ print(best)
 print("sequence:.......")
 print(populations[0])
 
-fromsklearn.metricsimport classification_report,accuracy_score
+from sklearn.metrics import classification_report,accuracy_score
 
 categorical_pred = np.argmax(model.predict(X_test),axis=1)
 
@@ -206,10 +201,36 @@ print('Results for Categorical Model i.e Just ANN model')
 print(accuracy_score(y_test,categorical_pred))
 print(classification_report(y_test,categorical_pred))
 
-fromsklearn.metricsimport classification_report,accuracy_score
+from sklearn.metrics import classification_report,accuracy_score
 
 binary_pred = np.round(binary_model.predict(X_test)).astype(int)
 
 print('Results for Binary Model i.e Optimized ANN with Genetic Algorithm')
 print(accuracy_score(Y_test_binary,binary_pred))
 print(classification_report(Y_test_binary,binary_pred))
+
+import numpy as np
+
+
+sample_input = np.array([[56,1,2,130,256,1,0,142,1,0.6,1,1,1]])
+
+
+sample_input = (sample_input - mean) / std
+
+
+categorical_pred = model.predict(sample_input)
+predicted_class_cat = np.argmax(categorical_pred, axis=1)[0]
+
+if predicted_class_cat == 1:
+    print("Prediction (Categorical Model): 🚨 Likely has heart disease.")
+else:
+    print("Prediction (Categorical Model): ✅ Unlikely to have heart disease.")
+
+
+binary_pred = binary_model.predict(sample_input)
+predicted_class_bin = int(np.round(binary_pred[0][0]))
+
+if predicted_class_bin == 1:
+    print("Prediction (Binary Model): 🚨 Likely has heart disease.")
+else:
+    print("Prediction (Binary Model): ✅ Unlikely to have heart disease.")
